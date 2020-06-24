@@ -1,7 +1,7 @@
 # genea_visualizer
 
-First you need to install docker-compuse:
-'sudo apt  install docker-compose'
+First you need to install docker-compose:
+`sudo apt  install docker-compose` (on ubuntu)
 
 Then to start the server localy run `docker-compose up --build`
 
@@ -75,4 +75,3 @@ with open("result.mp4", "wb") as f:
     f.write(video)
 
 ```
-(os.path.basename(file_name), open(file_name, "rb"))
