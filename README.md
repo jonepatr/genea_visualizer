@@ -2,6 +2,9 @@
 
 To start the server localy run `docker-compuse up --build`
 
+The server is a http based and works by uploading a bvh file. You will then recieve a "job id" which you can poll in order to see the progress of your rendering. When it is finished you will receive a URL to a video file that you can download. 
+Below are some examples using `curl` and at the bottom of the page (and in the file `example.py`) is a full python example of how this can be used.
+
 ```curl -XPOST -H "Authorization:Bearer j7HgTkwt24yKWfHPpFG3eoydJK6syAsz" -F "file=@/path/to/bvh/file.bvh" http://SERVER_URL/render``` 
 will return a URI to the current job `/jobid/[JOB_ID]`
 
