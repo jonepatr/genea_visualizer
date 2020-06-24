@@ -4,6 +4,9 @@ ENV CELERY_BROKER_URL redis://redis:6379/0
 ENV CELERY_RESULT_BACKEND redis://redis:6379/0
 ENV C_FORCE_ROOT true
 
+# Prompt non-interactive
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update
 
 RUN apt-get -y install python3-pip wget
