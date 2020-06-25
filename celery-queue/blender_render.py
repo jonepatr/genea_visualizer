@@ -107,20 +107,24 @@ print(f"total_frames {total_frames}", flush=True)
 bpy.context.scene.frame_end = total_frames
 tmp_dir = Path(tempfile.mkdtemp()) / "video"
 
-bpy.context.scene.render.filepath = str(tmp_dir)
+render = bpy.context.scene.render
 
-bpy.context.scene.render.image_settings.file_format = 'FFMPEG'
-bpy.context.scene.render.engine = 'BLENDER_WORKBENCH'
-# bpy.context.scene.render.image_settings.file_format = "PNG"
+render.filepath = str(tmp_dir)
+
+# Set render engine (this one seems to be the fastest)
+render.engine = 'BLENDER_WORKBENCH'
 
 # Set output format
-bpy.context.scene.render.ffmpeg.format = "MPEG4"
+render.image_settings.file_format = 'FFMPEG'
+render.ffmpeg.format = "MPEG4"
 
 # Set the codec
-bpy.context.scene.render.ffmpeg.codec = "H264"
+render.ffmpeg.codec = "H264"
+
+# Set the output resolution
+render.resolution_x = 480
+render.resolution_y = 270
 
 bpy.ops.render.render(animation=True, write_still=False)
-# bpy.ops.render.render(write_still=True)
 
-
-print("output_file", str(list(tmp_dir.parent.glob("*"))[0]))
+print("output_file", str(list(tmp_dir.parent.glob("*"))[0]), flush=True)

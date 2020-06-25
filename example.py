@@ -2,8 +2,16 @@ import requests
 from pathlib import Path
 import time
 
-server_url = "http://localhost:5001"
-bvh_file = Path("/path/to/file.bvh")
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("bvh_file", type=Path)
+parser.add_argument("--server_url", default="http://localhost:5001")
+
+args = parser.parse_args()
+
+server_url = args.server_url
+bvh_file = args.bvh_file
 headers = {"Authorization": "Bearer j7HgTkwt24yKWfHPpFG3eoydJK6syAsz"}
 
 

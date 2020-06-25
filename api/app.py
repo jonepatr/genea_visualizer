@@ -1,12 +1,23 @@
-from flask import Flask, request, url_for, send_from_directory, abort
-from flask_httpauth import HTTPTokenAuth
-from flask import url_for
-from worker import celery
-import celery.states as states
-from werkzeug import secure_filename
+import json
 import os
 from uuid import uuid4
-import json
+
+from flask import Flask, abort, request, send_from_directory, url_for
+from werkzeug import secure_filename
+
+import celery.states as states
+from celery import Celery
+from flask_httpauth import HTTPTokenAuth
+
+CELERY_BROKER_URL = (os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379"),)
+CELERY_RESULT_BACKEND = os.environ.get(
+    "CELERY_RESULT_BACKEND", "redis://localhost:6379"
+)
+
+
+celery_workers = Celery(
+    "tasks", broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND
+)
 
 
 app = Flask(__name__)
@@ -54,19 +65,20 @@ def files(file_name):
 @auth.login_required
 def render() -> str:
     bvh_file_uri = save_tmp_file(request.files["file"])
-    task = celery.send_task("tasks.render", args=[bvh_file_uri], kwargs={})
+    task = celery_workers.send_task("tasks.render", args=[bvh_file_uri], kwargs={})
     return url_for("check_job", task_id=task.id)
 
 
 @app.route("/jobid/<task_id>")
 @auth.login_required
 def check_job(task_id: str) -> str:
-    res = celery.AsyncResult(task_id)
+    res = celery_workers.AsyncResult(task_id)
     print(res, flush=True)
     if res.state == states.PENDING:
-        reserved_tasks = celery.control.inspect().reserved()
+        reserved_tasks = celery_workers.control.inspect().reserved()
+        tasks = []
         if reserved_tasks:
-            tasks_per_worker = celery.control.inspect().reserved().values()
+            tasks_per_worker = celery_workers.control.inspect().reserved().values()
             tasks = [item for sublist in tasks_per_worker for item in sublist]
             found = False
             for task in tasks:

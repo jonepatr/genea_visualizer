@@ -7,6 +7,8 @@ from celery.utils.log import get_task_logger
 import pickle
 import requests
 import tempfile
+from pyvirtualdisplay import Display
+Display().start()
 
 
 logger = get_task_logger(__name__)

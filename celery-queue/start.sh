@@ -1,1 +1,0 @@
-/blender/blender-2.83.0-linux64/blender -noaudio -b --python blender_render.py
