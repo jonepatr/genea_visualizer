@@ -12,6 +12,7 @@ ENV DEBUG true
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apk add build-base
+RUN pip install uvicorn==0.11.5 uvloop==0.14.0
 
 COPY . /api
 WORKDIR /api
