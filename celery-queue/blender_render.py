@@ -9,6 +9,8 @@ import sys
 argv = sys.argv
 argv = argv[argv.index("--") + 1 :]
 bvh_file_name = argv[0]
+resolution_x = int(argv[1])
+resolution_y = int(argv[2])
 
 bpy.data.objects.remove(bpy.data.objects["Cube"], do_unlink=True)
 
@@ -122,8 +124,8 @@ render.ffmpeg.format = "MPEG4"
 render.ffmpeg.codec = "H264"
 
 # Set the output resolution
-render.resolution_x = 480
-render.resolution_y = 270
+render.resolution_x = resolution_x
+render.resolution_y = resolution_y
 
 bpy.ops.render.render(animation=True, write_still=False)
 

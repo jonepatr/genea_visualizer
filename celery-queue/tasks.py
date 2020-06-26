@@ -8,6 +8,7 @@ import pickle
 import requests
 import tempfile
 from pyvirtualdisplay import Display
+
 Display().start()
 
 
@@ -26,12 +27,13 @@ headers = {
     "Authorization": "Bearer zPp683mzwC9S4nwkFMekoJJg5WZzCEX2RdKMDBdDvEEtY2Qz7kav2iSb58hQthQC"
 }
 
+
 class TaskFailure(Exception):
     pass
 
 
 @celery.task(name="tasks.render", bind=True)
-def render(self, bvh_file_uri: str) -> str:
+def render(self, bvh_file_uri: str, resolution_x: int, resolution_y: int) -> str:
     logger.info("rendering..")
 
     bvh_file = requests.get(API_SERVER + bvh_file_uri, headers=headers).content
@@ -48,6 +50,8 @@ def render(self, bvh_file_uri: str) -> str:
                 "blender_render.py",
                 "--",
                 tmpf.name,
+                str(resolution_x),
+                str(resolution_y),
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
