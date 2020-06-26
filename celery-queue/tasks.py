@@ -34,7 +34,7 @@ class TaskFailure(Exception):
 
 
 def validate_bvh_file(bvh_file):
-    file_content = bvh_file.decode('utf-8')
+    file_content = bvh_file.decode("utf-8")
     mocap = Bvh(file_content)
     counter = None
     for line in file_content.split("\n"):
@@ -52,15 +52,17 @@ def validate_bvh_file(bvh_file):
         raise TaskFailure(
             f"The supplied number of frames ({mocap.nframes}) is bigger than 1200"
         )
-    
+
     if mocap.frame_time != 0.05:
         raise TaskFailure(
             f"The supplied frame time ({mocap.frame_time}) differs from the required 0.05"
         )
 
+
 @celery.task(name="tasks.render", bind=True)
 def render(self, bvh_file_uri: str) -> str:
     logger.info("rendering..")
+    self.update_state(state="PROCESSING")
 
     bvh_file = requests.get(API_SERVER + bvh_file_uri, headers=headers).content
     validate_bvh_file(bvh_file)
