@@ -1,79 +1,68 @@
-import json
-import os
-from uuid import uuid4
-
-from flask import Flask, abort, request, send_from_directory, url_for
-from werkzeug import secure_filename
-
+from fastapi import FastAPI, Request, File, UploadFile
 import celery.states as states
+import os
 from celery import Celery
-from flask_httpauth import HTTPTokenAuth
+from fastapi.responses import JSONResponse, PlainTextResponse, FileResponse
+from uuid import uuid4
+from pathlib import Path
 
+UPLOAD_FOLDER = Path("/tmp")
 CELERY_BROKER_URL = (os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379"),)
 CELERY_RESULT_BACKEND = os.environ.get(
     "CELERY_RESULT_BACKEND", "redis://localhost:6379"
 )
 
-
 celery_workers = Celery(
     "tasks", broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND
 )
-
-
-app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = "/tmp"
-auth = HTTPTokenAuth(scheme="Bearer")
 
 tokens = {
     "system": "zPp683mzwC9S4nwkFMekoJJg5WZzCEX2RdKMDBdDvEEtY2Qz7kav2iSb58hQthQC",
     "user": "j7HgTkwt24yKWfHPpFG3eoydJK6syAsz",
 }
 
+app = FastAPI()
 
-@auth.verify_token
-def verify_token(token):
+
+def save_tmp_file(upload_file) -> str:
+    _, extension = os.path.splitext(upload_file.filename)
+    filename = f"{uuid4()}{extension}"
+
+    with (UPLOAD_FOLDER / filename).open("wb") as f:
+        f.write(upload_file.file.read())
+
+    return f"/files/{filename}"
+
+
+def verify_token(headers, path):
+    token = headers.get("authorization", "")[7:]
     if tokens["system"] == token:
         return True
-    elif request.endpoint != "upload_video" and tokens["user"] == token:
+    elif not path.startswith("/upload_video") and tokens["user"] == token:
         return True
     else:
         return False
 
 
-def save_tmp_file(file_) -> str:
-    _, extension = os.path.splitext(file_.filename)
-    filename = f"{uuid4()}{extension}"
-    file_.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-    return url_for("files", file_name=filename)
+@app.middleware("http")
+async def authorize(request: Request, call_next):
+    if not verify_token(request.headers, request.scope["path"]):
+        return JSONResponse(status_code=401)
+    return await call_next(request)
 
 
-@app.route("/upload_video", methods=["POST"])
-@auth.login_required
-def upload_video() -> str:
-    return save_tmp_file(request.files["file"])
+@app.post("/render", response_class=PlainTextResponse)
+async def render(file: UploadFile = File(...)):
 
-
-@app.route("/files/<file_name>")
-@auth.login_required
-def files(file_name):
-    return send_from_directory(
-        directory=app.config["UPLOAD_FOLDER"], filename=file_name
-    )
-
-
-@app.route("/render", methods=["POST"])
-@auth.login_required
-def render() -> str:
-    bvh_file_uri = save_tmp_file(request.files["file"])
+    bvh_file_uri = save_tmp_file(file)
+    print(bvh_file_uri)
     task = celery_workers.send_task("tasks.render", args=[bvh_file_uri], kwargs={})
-    return url_for("check_job", task_id=task.id)
+    return f"/jobid/{task.id}"
 
 
-@app.route("/jobid/<task_id>")
-@auth.login_required
-def check_job(task_id: str) -> str:
+@app.get("/jobid/{task_id}")
+async def check_job(task_id: str) -> str:
     res = celery_workers.AsyncResult(task_id)
-    print(res, flush=True)
     if res.state == states.PENDING:
         reserved_tasks = celery_workers.control.inspect().reserved()
         tasks = []
@@ -89,4 +78,14 @@ def check_job(task_id: str) -> str:
         result = str(res.result)
     else:
         result = res.result
-    return json.dumps({"state": res.state, "result": result})
+    return {"state": res.state, "result": result}
+
+
+@app.get("/files/{file_name}")
+async def files(file_name):
+    return FileResponse(str(UPLOAD_FOLDER / file_name))
+
+
+@app.post("/upload_video", response_class=PlainTextResponse)
+def upload_video(file: UploadFile = File(...)) -> str:
+    return save_tmp_file(file)

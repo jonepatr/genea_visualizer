@@ -11,6 +11,8 @@ ENV DEBUG true
 # Prompt non-interactive
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN apk add build-base
+
 COPY . /api
 WORKDIR /api
 
@@ -20,7 +22,6 @@ RUN pip install -r requirements.txt
 # expose the app port
 EXPOSE 5001
 
-RUN pip install gunicorn
 
 # run the app server
-CMD ["gunicorn", "--bind", "0.0.0.0:5001", "--workers", "4", "app:app"]
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5001", "--workers", "4", "app:app"]
