@@ -11,7 +11,7 @@ Below are some examples using `curl` and at the bottom of the page (and in the f
 Since the server is avialable publicly online, we have a simple authentication system, so just pass in the token `j7HgTkwt24yKWfHPpFG3eoydJK6syAsz` with each request.
 
 ```curl -XPOST -H "Authorization:Bearer j7HgTkwt24yKWfHPpFG3eoydJK6syAsz" -F "file=@/path/to/bvh/file.bvh" http://SERVER_URL/render``` 
-will return a URI to the current job `/jobid/[JOB_ID]`. You can also pass resolution_x and/or resolution_y in order to decrease the resolution of the output in order to speed up rendering. Note however that the resolution may not exceed 480x270.
+will return a URI to the current job `/jobid/[JOB_ID]`.
 
 `curl -H "Authorization:Bearer j7HgTkwt24yKWfHPpFG3eoydJK6syAsz" http://SERVER_URL/jobid/[JOB_ID]` will return the current job state, which might be
 

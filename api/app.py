@@ -6,7 +6,7 @@ from uuid import uuid4
 
 import celery.states as states
 from celery import Celery
-from fastapi import BackgroundTasks, FastAPI, File, Request, UploadFile, HTTPException
+from fastapi import BackgroundTasks, FastAPI, File, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 
 UPLOAD_FOLDER = Path("/tmp/genea_visualizer")
@@ -65,18 +65,9 @@ async def authorize(request: Request, call_next):
 
 
 @app.post("/render", response_class=PlainTextResponse)
-async def render(
-    background_tasks: BackgroundTasks,
-    file: UploadFile = File(...),
-    resolution_x: int = 480,
-    resolution_y: int = 270,
-):
-    if resolution_x > 480 or resolution_y > 270:
-        raise HTTPException(status_code=400, detail=f"resolution has to be <= 480x270, {resolution_x}x{resolution_y} given")
+async def render(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
     bvh_file_uri = await save_tmp_file(file)
-    task = celery_workers.send_task(
-        "tasks.render", args=[bvh_file_uri, resolution_x, resolution_y], kwargs={}
-    )
+    task = celery_workers.send_task("tasks.render", args=[bvh_file_uri], kwargs={})
     background_tasks.add_task(remove_old_tmp_files)
     return f"/jobid/{task.id}"
 

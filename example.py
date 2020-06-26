@@ -22,10 +22,6 @@ render_request = requests.post(
     f"{server_url}/render",
     files={"file": (bvh_file.name, bvh_file.open())},
     headers=headers,
-    params={
-        "resolution_x": 240,
-        "resolution_y": 135,
-    }
 )
 job_uri = render_request.text
 

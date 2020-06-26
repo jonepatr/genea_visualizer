@@ -33,7 +33,7 @@ class TaskFailure(Exception):
 
 
 @celery.task(name="tasks.render", bind=True)
-def render(self, bvh_file_uri: str, resolution_x: int, resolution_y: int) -> str:
+def render(self, bvh_file_uri: str) -> str:
     logger.info("rendering..")
 
     bvh_file = requests.get(API_SERVER + bvh_file_uri, headers=headers).content
@@ -49,9 +49,7 @@ def render(self, bvh_file_uri: str, resolution_x: int, resolution_y: int) -> str
                 "--python",
                 "blender_render.py",
                 "--",
-                tmpf.name,
-                str(resolution_x),
-                str(resolution_y),
+                tmpf.name
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
