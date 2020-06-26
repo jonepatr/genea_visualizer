@@ -61,15 +61,10 @@ def fix_obj(parent_obj):
 fix_obj(fbx_model)
 
 old_objs = set(scene.objects)
-res = bpy.ops.import_anim.bvh(
-    filepath=bvh_file_name,
-    global_scale=0.01,
-    use_fps_scale=True,
-    update_scene_fps=True,
-    update_scene_duration=True,
-)
+res = bpy.ops.import_anim.bvh(filepath=bvh_file_name, global_scale=0.01,)
+# use_fps_scale=True, update_scene_fps=True, update_scene_duration=True,
 
-bvh_obj, = set(context.scene.objects) - old_objs
+(bvh_obj,) = set(context.scene.objects) - old_objs
 
 for pb in fbx_model.pose.bones:
     ct = pb.constraints.new("COPY_ROTATION")
@@ -105,6 +100,7 @@ print(f"total_frames {total_frames}", flush=True)
 
 
 bpy.context.scene.frame_end = total_frames
+
 tmp_dir = Path(tempfile.mkdtemp()) / "video"
 
 render = bpy.context.scene.render
@@ -112,10 +108,10 @@ render = bpy.context.scene.render
 render.filepath = str(tmp_dir)
 
 # Set render engine (this one seems to be the fastest)
-render.engine = 'BLENDER_WORKBENCH'
+render.engine = "BLENDER_WORKBENCH"
 
 # Set output format
-render.image_settings.file_format = 'FFMPEG'
+render.image_settings.file_format = "FFMPEG"
 render.ffmpeg.format = "MPEG4"
 
 # Set the codec
@@ -124,6 +120,8 @@ render.ffmpeg.codec = "H264"
 # Set the output resolution
 render.resolution_x = 480
 render.resolution_y = 270
+
+render.fps = 20
 
 bpy.ops.render.render(animation=True, write_still=False)
 

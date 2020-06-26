@@ -27,11 +27,11 @@ job_uri = render_request.text
 
 done = False
 while not done:
+    time.sleep(10)
     response = requests.get(server_url + job_uri, headers=headers).json()
-
     if response["state"] == "PENDING":
         jobs_in_queue = response["result"]["jobs_in_queue"]
-        print(f"pending.. total of {jobs_in_queue} jobs in queue")
+        print(f"pending.. {jobs_in_queue} jobs currently in queue")
 
     elif response["state"] == "RENDERING":
         current = response["result"]["current"]
@@ -44,12 +44,9 @@ while not done:
 
     elif response["state"] == "FAILURE":
         raise Exception(response["result"])
-
     else:
         print(response)
         raise Exception("should not happen..")
-
-    time.sleep(10)
 
 
 video = requests.get(server_url + file_url, headers=headers).content
