@@ -17,7 +17,9 @@ will return a URI to the current job `/jobid/[JOB_ID]`.
 
 * `{result": {"jobs_in_queue": X}, "state": "PENDING"}`: Which means the job is in the queue and waiting to be rendered. The `jobs_in_queue` property is the total number of jobs waiting to be executed. The order of job execution is not guranteed, which means that this number does not reflect how many jobs there are before the current job, but rather reflects if the server is currently busy or not.
 
-* `{result":{"current": X, "total": Y}, "state": "RENDERING"}`: The job is currently being executed. `current` shows which is the last rendered frame and `total` shows how many frames in total this job will render.
+* `{result": null, "state": "PROCESSING"}`: The job is currently being processed. Depending on the file size this might take a while, but this acknowledges that the server has started to working on the request.
+
+* `{result":{"current": X, "total": Y}, "state": "RENDERING"}`: The job is currently being rendered, this is the last stage of the process. `current` shows which is the last rendered frame and `total` shows how many frames in total this job will render.
 
 * `{"result": FILE_URL, "state": "SUCCESS"}`: The job ended successfully and the video is available at `http://SERVER_URL/[FILE_URL]`.
 
