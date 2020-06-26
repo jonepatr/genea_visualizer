@@ -1,9 +1,21 @@
 # genea_visualizer
 
+The server consists of several containers which are launched together with the docker-compose command described below.
+The componantes are:
+* web: this is the http server which receives render requests and places them on a "celery" queue to be processed.
+* worker: this takes jobs from the "celery" queue and works on them. Each worker runs one blender process, so increasing the amount of workers adds more parallelization. 
+* monitor: this is a monitoring tool for celery. Default username is `***REMOVED***` and password is `***REMOVED***` (can be changed by setting `FLOWER_USER` and `FLOWER_PWD` when starting the docker-compose command)
+* redis: needed for celery
+
 First you need to install docker-compose:
 `sudo apt  install docker-compose` (on ubuntu)
 
-Then to start the server localy run `docker-compose up --build`
+Then to start the server run `docker-compose up --build`
+
+In order to run several (for example 3) workers (blender renderers, which allows to parallelize rendering) `docker-compose up --build --scale worker=3`
+
+The `-d` flag can also be passed in order to run the server in the background. Logs can then be accessed by running `docker-compose logs -f`. Additionally it's possible to rebuild just the worker or api containers with minimal distruption in the running server by running for example `docker-compose up -d --no-deps --scale worker=2 --build worker`. This will rebuild the worker container and stop the old ones and start 2 new ones.
+
 
 The server is http based and works by uploading a bvh file. You will then recieve a "job id" which you can poll in order to see the progress of your rendering. When it is finished you will receive a URL to a video file that you can download. 
 Below are some examples using `curl` and at the bottom of the page (and in the file `example.py`) is a full python example of how this can be used.
