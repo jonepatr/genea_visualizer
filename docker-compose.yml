@@ -1,12 +1,14 @@
 version: "3"
 services:
   web:
-    environment:
-      - PORT=5001
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    environment: 
+      - SYSTEM_TOKEN=${SYSTEM_TOKEN}
+      - USER_TOKEN=${USER_TOKEN}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+      - INTERNAL_API_PORT=${INTERNAL_API_PORT}
     ports:
-     - "5001:5001"
+      - ${PUBLIC_WEB_PORT}:${INTERNAL_API_PORT}
     build:
       context: ./api
       dockerfile: Dockerfile
@@ -14,25 +16,33 @@ services:
     depends_on:
       - redis
   worker:
-    environment:
-      - RENDER_RESOLUTION_X=480
-      - RENDER_RESOLUTION_Y=270
-      - RENDER_FPS=20
-      - MAX_NUMBER_FRAMES=-1  # will throw error if submitted file has more frames than this, -1 no restriction
-      - WORKER_TIMEOUT=600  # if a blender worker takes longer than this it will time out
+    environment: 
+      - SYSTEM_TOKEN=${SYSTEM_TOKEN}
+      - API_SERVER=http://web:${INTERNAL_API_PORT}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+      - RENDER_RESOLUTION_X=${RENDER_RESOLUTION_X}
+      - RENDER_RESOLUTION_Y=${RENDER_RESOLUTION_Y}
+      - RENDER_FPS=${RENDER_FPS}
+      - MAX_NUMBER_FRAMES=${MAX_NUMBER_FRAMES}
+      - WORKER_TIMEOUT=${WORKER_TIMEOUT}
     build:
       context: celery-queue
       dockerfile: Dockerfile
     depends_on:
       - redis
   monitor:
+    environment: 
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+      - WORKER_TIMEOUT=${WORKER_TIMEOUT}
     build:
       context: celery-queue
       dockerfile: Dockerfile
     ports:
-     - "5555:5555"
+      - ${PUBLIC_MONITOR_PORT}:${INTERNAL_MONITOR_PORT}
     entrypoint: flower
-    command:  -A tasks --port=5555 --broker=redis://redis:6379/0 --basic_auth=${FLOWER_USER}:${FLOWER_PWD}
+    command: -A tasks --port=${INTERNAL_MONITOR_PORT} --broker=${CELERY_BROKER_URL} --basic_auth=${FLOWER_USER}:${FLOWER_PWD}
     depends_on:
       - redis
   redis:

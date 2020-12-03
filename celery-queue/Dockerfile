@@ -1,8 +1,6 @@
 FROM ubuntu:18.04
 
-ENV CELERY_BROKER_URL redis://redis:6379/0
-ENV CELERY_RESULT_BACKEND redis://redis:6379/0
-ENV API_SERVER http://web:5001
+
 ENV C_FORCE_ROOT true
 ENV DEBIAN_FRONTEND=noninteractive
 

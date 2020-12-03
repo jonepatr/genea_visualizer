@@ -19,20 +19,13 @@ Display().start()
 
 logger = get_task_logger(__name__)
 
-CELERY_BROKER_URL = (os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379"),)
-CELERY_RESULT_BACKEND = os.environ.get(
-    "CELERY_RESULT_BACKEND", "redis://localhost:6379"
+
+WORKER_TIMEOUT = int(os.environ["WORKER_TIMEOUT"])
+celery = Celery(
+    "tasks",
+    broker=os.environ["CELERY_BROKER_URL"],
+    backend=os.environ["CELERY_RESULT_BACKEND"],
 )
-API_SERVER = os.environ.get("API_SERVER", "http://localhost:5001")
-WORKER_TIMEOUT = int(os.environ.get("WORKER_TIMEOUT", 600))
-MAX_NUMBER_FRAMES = int(os.environ.get("MAX_NUMBER_FRAMES", 1200))
-FRAME_TIME = 1.0 / float(os.environ.get("RENDER_FPS", 20))
-
-celery = Celery("tasks", broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND)
-
-headers = {
-    "Authorization": "Bearer zPp683mzwC9S4nwkFMekoJJg5WZzCEX2RdKMDBdDvEEtY2Qz7kav2iSb58hQthQC"
-}
 
 
 class TaskFailure(Exception):
@@ -40,6 +33,9 @@ class TaskFailure(Exception):
 
 
 def validate_bvh_file(bvh_file):
+    MAX_NUMBER_FRAMES = int(os.environ["MAX_NUMBER_FRAMES"])
+    FRAME_TIME = 1.0 / float(os.environ["RENDER_FPS"])
+
     file_content = bvh_file.decode("utf-8")
     mocap = Bvh(file_content)
     counter = None
@@ -67,10 +63,13 @@ def validate_bvh_file(bvh_file):
 
 @celery.task(name="tasks.render", bind=True, hard_time_limit=WORKER_TIMEOUT)
 def render(self, bvh_file_uri: str) -> str:
+    HEADERS = {"Authorization": f"Bearer " + os.environ["SYSTEM_TOKEN"]}
+    API_SERVER = os.environ["API_SERVER"]
+
     logger.info("rendering..")
     self.update_state(state="PROCESSING")
 
-    bvh_file = requests.get(API_SERVER + bvh_file_uri, headers=headers).content
+    bvh_file = requests.get(API_SERVER + bvh_file_uri, headers=HEADERS).content
     validate_bvh_file(bvh_file)
 
     with tempfile.NamedTemporaryFile(suffix=".bhv") as tmpf:
@@ -104,7 +103,7 @@ def render(self, bvh_file_uri: str) -> str:
                 _, file_name = line.split(" ")
                 files = {"file": (os.path.basename(file_name), open(file_name, "rb"))}
                 return requests.post(
-                    API_SERVER + "/upload_video", files=files, headers=headers
+                    API_SERVER + "/upload_video", files=files, headers=HEADERS
                 ).text
             if total and current_frame:
                 self.update_state(

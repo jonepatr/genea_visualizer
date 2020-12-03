@@ -15,4 +15,4 @@ WORKDIR /api
 RUN pip install -r requirements.txt
 
 # run the app server
-CMD uvicorn --host 0.0.0.0 --port $PORT --workers 4 app:app
+CMD uvicorn --host 0.0.0.0 --port $INTERNAL_API_PORT --workers 4 app:app

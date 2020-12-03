@@ -15,7 +15,7 @@ The components are:
 First you need to install docker-compose:
 `sudo apt  install docker-compose` (on Ubuntu)
 
-You might want to edit some of the default parameters, such as render resolution and fps, in the `docker-compose.yml` file.
+You might want to edit some of the default parameters, such as render resolution and fps, in the `.env` file.
 
 Then to start the server run `docker-compose up --build`
 
@@ -27,11 +27,13 @@ The `-d` flag can also be passed in order to run the server in the background. L
 The server is HTTP-based and works by uploading a bvh file. You will then receive a "job id" which you can poll in order to see the progress of your rendering. When it is finished you will receive a URL to a video file that you can download. 
 Below are some examples using `curl` and in the file `example.py` there is a full python (3.7) example of how this can be used.
 
-Since the server is available publicly online, a simple authentication system is included – just pass in the token `j7HgTkwt24yKWfHPpFG3eoydJK6syAsz` with each request. This can be changed in `docker-compose.yml`.
+Since the server is available publicly online, a simple authentication system is included – just pass in the token `j7HgTkwt24yKWfHPpFG3eoydJK6syAsz` with each request. This can be changed by modifying `USER_TOKEN` in `.env`.
 
 For a simple usage example, you can see a full python script in `example.py`.
 
 Otherwise, you can follow the detailed instructions on how to use the visualization server provided below.
+
+Depending on where you host the visualization, `SERVER_URL` might be different. If you just are running it locally on your machine you can use `127.0.0.1` but otherwise you would use the ip address to the machine that is hosting the server.
 
 ```curl -XPOST -H "Authorization:Bearer j7HgTkwt24yKWfHPpFG3eoydJK6syAsz" -F "file=@/path/to/bvh/file.bvh" http://SERVER_URL/render``` 
 will return a URI to the current job `/jobid/[JOB_ID]`.

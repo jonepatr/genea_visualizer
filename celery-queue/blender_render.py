@@ -125,10 +125,10 @@ render.ffmpeg.format = "MPEG4"
 render.ffmpeg.codec = "H264"
 
 # Set the output resolution
-render.resolution_x = int(os.environ.get('RENDER_RESOLUTION_X', 480))
-render.resolution_y = int(os.environ.get('RENDER_RESOLUTION_Y', 270))
+render.resolution_x = int(os.environ["RENDER_RESOLUTION_X"])
+render.resolution_y = int(os.environ["RENDER_RESOLUTION_Y"])
 
-render.fps = int(os.environ.get('RENDER_FPS', 20))
+render.fps = int(os.environ["RENDER_FPS"])
 
 bpy.ops.render.render(animation=True, write_still=False)
 

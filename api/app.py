@@ -18,19 +18,12 @@ from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 UPLOAD_FOLDER = Path("/tmp/genea_visualizer")
 UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
 
-CELERY_BROKER_URL = (os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379"),)
-CELERY_RESULT_BACKEND = os.environ.get(
-    "CELERY_RESULT_BACKEND", "redis://localhost:6379"
-)
 
 celery_workers = Celery(
-    "tasks", broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND
+    "tasks",
+    broker=os.environ["CELERY_BROKER_URL"],
+    backend=os.environ["CELERY_RESULT_BACKEND"],
 )
-
-tokens = {
-    "system": "zPp683mzwC9S4nwkFMekoJJg5WZzCEX2RdKMDBdDvEEtY2Qz7kav2iSb58hQthQC",
-    "user": "j7HgTkwt24yKWfHPpFG3eoydJK6syAsz",
-}
 
 app = FastAPI()
 
@@ -44,9 +37,9 @@ async def save_tmp_file(upload_file) -> str:
 
 def verify_token(headers, path):
     token = headers.get("authorization", "")[7:]
-    if tokens["system"] == token:
+    if os.environ["SYSTEM_TOKEN"] == token:
         return True
-    elif not path.startswith("/upload_video") and tokens["user"] == token:
+    elif not path.startswith("/upload_video") and os.environ["USER_TOKEN"] == token:
         return True
     else:
         return False
