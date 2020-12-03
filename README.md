@@ -1,4 +1,9 @@
 # GENEA 2020 BVH Visualizer
+<p align="center">
+  <img src="gesture.gif" alt="example from visualization server" />
+</p>
+
+
 This repository provides scripts that can be used to visualize BVH files. These scripts were developed for the [GENEA Challenge 2020](https://genea-workshop.github.io/2020/#gesture-generation-challenge), and enables reproducing the visualizations used for the challenge stimuli.
 The server consists of several containers which are launched together with the docker-compose command described below.
 The components are:
@@ -6,9 +11,6 @@ The components are:
 * worker: this takes jobs from the "celery" queue and works on them. Each worker runs one Blender process, so increasing the amount of workers adds more parallelization. 
 * monitor: this is a monitoring tool for celery. Default username is `user` and password is `password` (can be changed by setting `FLOWER_USER` and `FLOWER_PWD` when starting the docker-compose command)
 * redis: needed for celery
-
-
-![](gesture.gif)
 
 
 ## Build and start visualization server
