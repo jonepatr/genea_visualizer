@@ -1,12 +1,16 @@
 version: "3"
 services:
   web:
+    environment:
+      - PORT=5001
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    ports:
+     - "5001:5001"
     build:
       context: ./api
       dockerfile: Dockerfile
     restart: always
-    ports:
-     - "5001:5001"
     depends_on:
       - redis
   worker:
@@ -14,8 +18,8 @@ services:
       - RENDER_RESOLUTION_X=480
       - RENDER_RESOLUTION_Y=270
       - RENDER_FPS=20
-      - MAX_NUMBER_FRAMES=1200
-      - WORKER_TIMEOUT=600
+      - MAX_NUMBER_FRAMES=-1  # will throw error if submitted file has more frames than this, -1 no restriction
+      - WORKER_TIMEOUT=600  # if a blender worker takes longer than this it will time out
     build:
       context: celery-queue
       dockerfile: Dockerfile
