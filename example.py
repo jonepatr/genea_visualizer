@@ -1,3 +1,10 @@
+# Copyright 2020 by Patrik Jonell.
+# All rights reserved.
+# This file is part of the GENEA visualizer,
+# and is released under the GPLv3 License. Please see the LICENSE
+# file that should have been included as part of this package.
+
+
 import requests
 from pathlib import Path
 import time

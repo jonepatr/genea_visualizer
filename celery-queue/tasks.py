@@ -1,10 +1,14 @@
+# Copyright 2020 by Patrik Jonell.
+# All rights reserved.
+# This file is part of the GENEA visualizer,
+# and is released under the GPLv3 License. Please see the LICENSE
+# file that should have been included as part of this package.
+
+
 import os
-import time
 from celery import Celery
 import subprocess
-import sys
 from celery.utils.log import get_task_logger
-import pickle
 import requests
 import tempfile
 from pyvirtualdisplay import Display
