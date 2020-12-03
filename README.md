@@ -6,7 +6,7 @@ The components are:
 * worker: this takes jobs from the "celery" queue and works on them. Each worker runs one Blender process, so increasing the amount of workers adds more parallelization. 
 * monitor: this is a monitoring tool for celery. Default username is `user` and password is `password` (can be changed by setting `FLOWER_USER` and `FLOWER_PWD` when starting the docker-compose command)
 * redis: needed for celery
-![](gif/gesture.gif)
+![](gesture.gif)
 
 ## Build and start visualization server
 First you need to install docker-compose:
