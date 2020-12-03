@@ -20,7 +20,9 @@ CELERY_RESULT_BACKEND = os.environ.get(
     "CELERY_RESULT_BACKEND", "redis://localhost:6379"
 )
 API_SERVER = os.environ.get("API_SERVER", "http://localhost:5001")
-
+WORKER_TIMEOUT = int(os.environ.get("WORKER_TIMEOUT", 600))
+MAX_NUMBER_FRAMES = int(os.environ.get("MAX_NUMBER_FRAMES", 1200))
+FRAME_TIME = 1.0 / float(os.environ.get("RENDER_FPS", 20))
 
 celery = Celery("tasks", broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND)
 
@@ -48,18 +50,18 @@ def validate_bvh_file(bvh_file):
             f"The number of rows with motion data ({counter}) does not match the Frames field ({mocap.nframes})"
         )
 
-    if mocap.nframes > 1200:
+    if MAX_NUMBER_FRAMES != -1 and mocap.nframes > MAX_NUMBER_FRAMES:
         raise TaskFailure(
-            f"The supplied number of frames ({mocap.nframes}) is bigger than 1200"
+            f"The supplied number of frames ({mocap.nframes}) is bigger than {MAX_NUMBER_FRAMES}"
         )
 
-    if mocap.frame_time != 0.05:
+    if mocap.frame_time != FRAME_TIME:
         raise TaskFailure(
-            f"The supplied frame time ({mocap.frame_time}) differs from the required 0.05"
+            f"The supplied frame time ({mocap.frame_time}) differs from the required {FRAME_TIME}"
         )
 
 
-@celery.task(name="tasks.render", bind=True)
+@celery.task(name="tasks.render", bind=True, hard_time_limit=WORKER_TIMEOUT)
 def render(self, bvh_file_uri: str) -> str:
     logger.info("rendering..")
     self.update_state(state="PROCESSING")

@@ -10,6 +10,12 @@ services:
     depends_on:
       - redis
   worker:
+    environment:
+      - RENDER_RESOLUTION_X=480
+      - RENDER_RESOLUTION_Y=270
+      - RENDER_FPS=20
+      - MAX_NUMBER_FRAMES=1200
+      - WORKER_TIMEOUT=600
     build:
       context: celery-queue
       dockerfile: Dockerfile

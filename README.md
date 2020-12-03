@@ -10,6 +10,9 @@ The componantes are:
 First you need to install docker-compose:
 `sudo apt  install docker-compose` (on ubuntu)
 
+
+You might want to edit some of the default parameters, such as render resolution and fps, in the `docker-compose.yml` file.
+
 Then to start the server run `docker-compose up --build`
 
 In order to run several (for example 3) workers (blender renderers, which allows to parallelize rendering) `docker-compose up --build --scale worker=3`
