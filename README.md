@@ -4,7 +4,7 @@ The server consists of several containers which are launched together with the d
 The componantes are:
 * web: this is the http server which receives render requests and places them on a "celery" queue to be processed.
 * worker: this takes jobs from the "celery" queue and works on them. Each worker runs one blender process, so increasing the amount of workers adds more parallelization. 
-* monitor: this is a monitoring tool for celery. Default username is `***REMOVED***` and password is `***REMOVED***` (can be changed by setting `FLOWER_USER` and `FLOWER_PWD` when starting the docker-compose command)
+* monitor: this is a monitoring tool for celery. Default username is `user` and password is `password` (can be changed by setting `FLOWER_USER` and `FLOWER_PWD` when starting the docker-compose command)
 * redis: needed for celery
 
 First you need to install docker-compose:
