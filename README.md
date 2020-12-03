@@ -28,11 +28,11 @@ The `-d` flag can also be passed in order to run the server in the background. L
 # Use the visualization server
 
 The server is http based and works by uploading a bvh file. You will then recieve a "job id" which you can poll in order to see the progress of your rendering. When it is finished you will receive a URL to a video file that you can download. 
-Below are some examples using `curl` and at the bottom of the page (and in the file `example.py`) is a full python example of how this can be used.
+Below are some examples using `curl` and in the file `example.py` there is a full python (3.7) example of how this can be used.
 
-Since the server is avialable publicly online, we have a simple authentication system, so just pass in the token `j7HgTkwt24yKWfHPpFG3eoydJK6syAsz` with each request.
+Since the server is avialable publicly online, we have a simple authentication system, so just pass in the token `j7HgTkwt24yKWfHPpFG3eoydJK6syAsz` with each request (this can be changed in the `docker-compose.yml`).
 
-For simple usage example, you can see a full python (3.7) script in `example.py`.
+For a simple usage example, you can see a full python script in `example.py`.
 
 Otherwise, you can follow the detailed instructions on how to use the visualization server provided below.
 
