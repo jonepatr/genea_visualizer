@@ -1,4 +1,6 @@
-# genea_visualizer
+# BVH Visualizer
+
+This repository provides scripts which could be used to visualize BVH files. It was developed during [GENEA Gesture Generation Chalenge 2020](https://genea-workshop.github.io/2020/#gesture-generation-challenge).
 
 The server consists of several containers which are launched together with the docker-compose command described below.
 The componantes are:
@@ -6,6 +8,8 @@ The componantes are:
 * worker: this takes jobs from the "celery" queue and works on them. Each worker runs one blender process, so increasing the amount of workers adds more parallelization. 
 * monitor: this is a monitoring tool for celery. Default username is `user` and password is `password` (can be changed by setting `FLOWER_USER` and `FLOWER_PWD` when starting the docker-compose command)
 * redis: needed for celery
+
+# Build and start visualization server
 
 First you need to install docker-compose:
 `sudo apt  install docker-compose` (on ubuntu)
@@ -20,10 +24,17 @@ In order to run several (for example 3) workers (blender renderers, which allows
 The `-d` flag can also be passed in order to run the server in the background. Logs can then be accessed by running `docker-compose logs -f`. Additionally it's possible to rebuild just the worker or api containers with minimal distruption in the running server by running for example `docker-compose up -d --no-deps --scale worker=2 --build worker`. This will rebuild the worker container and stop the old ones and start 2 new ones.
 
 
+
+# Use the visualization server
+
 The server is http based and works by uploading a bvh file. You will then recieve a "job id" which you can poll in order to see the progress of your rendering. When it is finished you will receive a URL to a video file that you can download. 
 Below are some examples using `curl` and at the bottom of the page (and in the file `example.py`) is a full python example of how this can be used.
 
 Since the server is avialable publicly online, we have a simple authentication system, so just pass in the token `j7HgTkwt24yKWfHPpFG3eoydJK6syAsz` with each request.
+
+For simple usage example, you can see a full python (3.7) script in `example.py`.
+
+Otherwise, you can follow the detailed instructions on how to use the visualization server provided below.
 
 ```curl -XPOST -H "Authorization:Bearer j7HgTkwt24yKWfHPpFG3eoydJK6syAsz" -F "file=@/path/to/bvh/file.bvh" http://SERVER_URL/render``` 
 will return a URI to the current job `/jobid/[JOB_ID]`.
@@ -42,6 +53,3 @@ will return a URI to the current job `/jobid/[JOB_ID]`.
 
 
 In order to retrieve the video: `curl -H "Authorization:Bearer j7HgTkwt24yKWfHPpFG3eoydJK6syAsz" http://SERVER_URL/[FILE_URL] -o result.mp4`. Please note that the server will delete the file after you retrieve it, so you can only retrieve it once!
-
-
-A full python (3.7) example can also be found in `example.py`.
