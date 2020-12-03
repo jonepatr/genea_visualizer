@@ -27,7 +27,6 @@ job_uri = render_request.text
 
 done = False
 while not done:
-    time.sleep(10)
     resp = requests.get(server_url + job_uri, headers=headers)
     resp.raise_for_status()
 
@@ -48,12 +47,14 @@ while not done:
     elif response["state"] == "SUCCESS":
         file_url = response["result"]
         done = True
+        break
 
     elif response["state"] == "FAILURE":
         raise Exception(response["result"])
     else:
         print(response)
         raise Exception("should not happen..")
+    time.sleep(10)
 
 
 video = requests.get(server_url + file_url, headers=headers).content
