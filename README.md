@@ -53,3 +53,14 @@ In order to retrieve the video, run `curl -H "Authorization:Bearer j7HgTkwt24yKW
 
 ## Replicating the GENEA Challenge 2020 visualizations
 The parameters in the enclosed file `docker-compose-genea.yml` correspond to those that were used to render the final evaluation stimuli of the GENEA Challenge, for ease of replication.
+
+### If you use this code in your research please cite it:
+```
+@inproceedings{kucherenko2020genea,
+author={Kucherenko, Taras and Jonell, Patrik and Yoon, Youngwooand Wolfert, Pieter and Henter, Gustav Eje},
+booktitle={Proceedings of the International Workshop onGeneration and Evaluation of Non-Verbal Behaviour for EmbodiedAgents},
+series = {GENEA ’20},
+title={The {GENEA} {C}hallenge 2020: {B}enchmarking gesture-generation systems on common data},
+url = {https://genea-workshop.github.io/2020/},
+year={2020}}
+```
