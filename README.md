@@ -57,7 +57,7 @@ The parameters in the enclosed file `docker-compose-genea.yml` correspond to tho
 ### If you use this code in your research please cite it:
 ```
 @inproceedings{kucherenko2020genea,
-author={Kucherenko, Taras and Jonell, Patrik and Yoon, Youngwooand Wolfert, Pieter and Henter, Gustav Eje},
+author={Kucherenko, Taras and Jonell, Patrik and Yoon, Youngwoo and Wolfert, Pieter and Henter, Gustav Eje},
 booktitle={Proceedings of the International Workshop onGeneration and Evaluation of Non-Verbal Behaviour for EmbodiedAgents},
 series = {GENEA ’20},
 title={The {GENEA} {C}hallenge 2020: {B}enchmarking gesture-generation systems on common data},
