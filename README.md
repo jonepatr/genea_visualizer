@@ -56,11 +56,11 @@ The parameters in the enclosed file `docker-compose-genea.yml` correspond to tho
 
 ### If you use this code in your research please cite it:
 ```
-@inproceedings{kucherenko2020genea,
-author={Kucherenko, Taras and Jonell, Patrik and Yoon, Youngwoo and Wolfert, Pieter and Henter, Gustav Eje},
-booktitle={Proceedings of the International Workshop onGeneration and Evaluation of Non-Verbal Behaviour for EmbodiedAgents},
-series = {GENEA ’20},
-title={The {GENEA} {C}hallenge 2020: {B}enchmarking gesture-generation systems on common data},
-url = {https://genea-workshop.github.io/2020/},
-year={2020}}
+@inproceedings{kucherenko2021large,
+  author={Kucherenko, Taras and Jonell, Patrik and Yoon, Youngwoo and Wolfert, Pieter and Henter, Gustav Eje},
+  title={A large, crowdsourced evaluation of gesture generation systems on common data},
+  note = {Accepted for publication.},
+  booktitle={{Proceedings of the Annual Conference on Intelligent User Interfaces}},
+  year={2021}
+}
 ```
