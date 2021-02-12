@@ -58,9 +58,9 @@ The parameters in the enclosed file `docker-compose-genea.yml` correspond to tho
 ```
 @inproceedings{kucherenko2021large,
   author={Kucherenko, Taras and Jonell, Patrik and Yoon, Youngwoo and Wolfert, Pieter and Henter, Gustav Eje},
-  title={A large, crowdsourced evaluation of gesture generation systems on common data},
+  title={A large, crowdsourced evaluation of gesture generation systems on common data: The GENEA Challenge 2020},
   note = {Accepted for publication.},
-  booktitle={{Proceedings of the Annual Conference on Intelligent User Interfaces}},
+  booktitle={{Proceedings of the International Conference on Intelligent User Interfaces}},
   year={2021}
 }
 ```
