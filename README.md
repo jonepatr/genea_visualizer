@@ -54,13 +54,22 @@ In order to retrieve the video, run `curl -H "Authorization:Bearer j7HgTkwt24yKW
 ## Replicating the GENEA Challenge 2020 visualizations
 The parameters in the enclosed file `docker-compose-genea.yml` correspond to those that were used to render the final evaluation stimuli of the GENEA Challenge, for ease of replication.
 
-### If you use this code in your research please cite it:
+### If you use this code in your research please cite our IUI article:
 ```
 @inproceedings{kucherenko2021large,
-  author={Kucherenko, Taras and Jonell, Patrik and Yoon, Youngwoo and Wolfert, Pieter and Henter, Gustav Eje},
-  title={A large, crowdsourced evaluation of gesture generation systems on common data: The GENEA Challenge 2020},
-  note = {Accepted for publication.},
-  booktitle={{Proceedings of the International Conference on Intelligent User Interfaces}},
-  year={2021}
+  author = {Kucherenko, Taras and Jonell, Patrik and Yoon, Youngwoo and Wolfert, Pieter and Henter, Gustav Eje},
+  title = {A Large, Crowdsourced Evaluation of Gesture Generation Systems on Common Data: {T}he {GENEA} {C}hallenge 2020},
+  year = {2021},
+  isbn = {9781450380171},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3397481.3450692},
+  doi = {10.1145/3397481.3450692},
+  booktitle = {26th International Conference on Intelligent User Interfaces},
+  pages = {11--21},
+  numpages = {11},
+  keywords = {evaluation paradigms, conversational agents, gesture generation},
+  location = {College Station, TX, USA},
+  series = {IUI '21}
 }
 ```
