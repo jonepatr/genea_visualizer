@@ -6,7 +6,7 @@ Babel==2.9.1
 billiard==3.5.0.3
 bvh==0.3
 celery==4.2.1
-certifi==2020.6.20
+certifi==2022.12.7
 chardet==3.0.4
 cryptography==3.3.2
 EasyProcess==0.3
