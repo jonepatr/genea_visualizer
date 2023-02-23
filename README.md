@@ -14,6 +14,9 @@ The components are:
 * monitor: this is a monitoring tool for celery. Default username is `user` and password is `password` (can be changed by setting `FLOWER_USER` and `FLOWER_PWD` when starting the docker-compose command)
 * redis: needed for celery
 
+## GENEA Challenge 2022 BVH Visualizer
+A newer version of the visualizer used for the GENEA Challenge 2022 can be found in [this fork](https://github.com/TeoNikolov/genea_visualizer)
+
 
 ## Build and start visualization server
 First you need to install docker-compose:
